@@ -107,6 +107,7 @@ p { margin: 0; }
 .lead { font-size: 1.3125rem; line-height: 1.5; max-width: 32em; }
 .shared-line { font: 600 clamp(1.625rem, 3.6vw, 2.25rem)/1.3 var(--font-display); padding-block: 6px; padding-inline-start: .3em; }
 .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+@media (max-width: 479px) { .actions { flex-wrap: nowrap; gap: 8px; } .actions .btn { padding: 0 14px; font-size: .9375rem; } }
 
 .short { background: var(--soft); border-radius: var(--radius-lg); padding: 28px; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
 .short-head { display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
@@ -145,7 +146,9 @@ p { margin: 0; }
 @media (min-width: 520px) { .wins li { grid-template-columns: 6.5rem minmax(0, 1fr); } }
 .wins b { font: 600 1.0625rem/1.3 var(--font-display); color: var(--purple); white-space: nowrap; }
 .wins span { color: var(--ink-muted); font-size: .9375rem; }
-.edu { display: flex; flex-wrap: wrap; gap: 8px 32px; color: var(--ink-muted); background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 24px; }
+.edu { display: flex; flex-direction: column; gap: 8px; color: var(--ink-muted); background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 24px; margin-top: 24px; }
+.edu p { margin: 0; }
+@media (min-width: 760px) { .edu { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 8px 32px; } .edu .label { flex-basis: 100%; } }
 .edu b { color: var(--ink); font-weight: 600; }
 .js .tl-item { opacity: 0; transform: translateY(18px); transition: opacity .6s ease-out, transform .6s ease-out; }
 .js .tl-item.in { opacity: 1; transform: none; }
@@ -155,7 +158,9 @@ p { margin: 0; }
 @media (min-width: 760px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 26px; display: flex; flex-direction: column; gap: 12px; min-width: 0; border: 2px solid transparent; transition: border-color .15s, transform .15s; }
 .card:hover { border-color: var(--purple); transform: translateY(-2px); }
-.card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px 12px; flex-wrap: wrap; }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px 12px; }
+.card-top .label { min-width: 0; padding-top: 6px; }
+.card-top .chip { flex-shrink: 0; }
 .card .desc { color: var(--ink-muted); }
 .plan { font-size: .9375rem; color: var(--ink-muted); border-inline-start: 4px solid var(--hl); padding-inline-start: 12px; }
 .plan b { color: var(--ink); font-weight: 700; margin-inline-end: 4px; }
@@ -288,7 +293,7 @@ p { margin: 0; }
         </div>
       </li>
     </ol>
-    <p class="edu"><span><b>BSc Industrial Engineering, Information Systems</b> · Ruppin Academic Center · 2013</span><span><b>UX course</b> · Netcraft Academy · 2017</span></p>
+    <div class="edu"><p class="label pop">Education</p><p><b>BSc Industrial Engineering, Information Systems</b> · Ruppin Academic Center · 2013</p><p><b>UX course</b> · Netcraft Academy · 2017</p></div>
   </section>
 
   <section class="block" id="work" aria-labelledby="work-h">
