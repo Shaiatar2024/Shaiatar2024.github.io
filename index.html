@@ -227,6 +227,20 @@ p { margin: 0; }
 .more[open] summary::before { content: "\2212"; }
 .wins b.num { font-size: 1.625rem; line-height: 1.1; }
 @media (min-width: 520px) { .wins li { grid-template-columns: 8.5rem minmax(0, 1fr) !important; } }
+
+/* ---------- agent-team video (demo) ---------- */
+.team { display: grid; gap: 28px; padding: 28px; background: var(--soft); border-radius: var(--radius-lg); align-items: center; }
+@media (min-width: 860px) { .team { grid-template-columns: minmax(0, 1fr) 440px; gap: 48px; padding: 40px 48px; } }
+.team-cap { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; text-align: start; }
+.team-cap p { margin: 0; }
+.team-cap .big { font: 600 clamp(1.5rem, 2.6vw, 2rem)/1.25 var(--font-display); max-width: 18em; }
+.team-media { display: flex; flex-direction: column; align-items: stretch; gap: 4px; width: 100%; max-width: 440px; justify-self: center; }
+.team-note { align-self: flex-end; display: inline-flex; align-items: flex-end; gap: 6px; margin: 0; padding-right: 8px; }
+.team-note svg { flex: none; overflow: visible; }
+.team-fig { position: relative; margin: 0; width: 100%; aspect-ratio: 4 / 5; border-radius: var(--radius); overflow: hidden; background: var(--soft); box-shadow: 0 10px 30px rgba(36,27,51,.14); }
+.team-fig video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.team-pause { position: absolute; right: 10px; bottom: 10px; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(36,27,51,.78); color: #fff; font-size: 1rem; cursor: pointer; display: grid; place-items: center; }
+.team-pause:focus-visible { outline: 3px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 6px var(--mark-ink); }
 </style>
 </head>
 <body>
@@ -351,6 +365,18 @@ p { margin: 0; }
     <div class="block-head">
       <h2 id="work-h">What I'm building now</h2>
     </div>
+    <div class="team">
+      <div class="team-cap">
+        <p class="label pop">My agents team</p>
+        <p class="big">My team of AI agents takes a product from discovery to launch.</p>
+      </div>
+      <div class="team-media">
+      <figure class="team-fig">
+          <video id="team-video" muted loop playsinline preload="none" poster="assets/agent-team-poster.jpg" width="1080" height="1350" aria-label="Silent looping video: a team of AI agents, named after Simpsons characters, takes a product through five phases (Discover, Design, Develop, QA, Launch), with the tagline &quot;Homer's the boss. I sign off.&quot;"><source src="assets/agent-team.mp4" type="video/mp4"></video>
+          <button class="team-pause" id="team-pause" type="button" aria-label="Pause video">&#10074;&#10074;</button>
+        </figure>
+      </div>
+    </div>
     <div class="cards">
       <article class="card"><div class="card-ico" aria-hidden="true"><svg viewBox="0 0 64 64"><circle class="doodle" pathLength="1" cx="14" cy="32" r="8"/><circle class="doodle" pathLength="1" cx="50" cy="32" r="8"/><path class="doodle" pathLength="1" d="M24 24 Q32 12 40 24 M40 24 L35 23 M40 24 L41 19"/><path class="doodle" pathLength="1" d="M24 40 Q32 52 40 40"/></svg></div>
         <div class="card-top"><span class="label">Co-founded · DirectRef</span><span class="chip wip">In beta</span></div>
@@ -395,6 +421,17 @@ p { margin: 0; }
   root.classList.add('js');
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var tv = document.getElementById('team-video'), tp = document.getElementById('team-pause');
+  if (tv && tp) {
+    var paused = reduce;
+    function sync() { tp.innerHTML = paused ? '&#9654;' : '&#10074;&#10074;'; tp.setAttribute('aria-label', paused ? 'Play video' : 'Pause video'); }
+    tp.addEventListener('click', function () { paused = !paused; paused ? tv.pause() : tv.play(); sync(); });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (e) { if (!paused) { e[0].isIntersecting ? tv.play().catch(function(){}) : tv.pause(); } }, { threshold: 0.4 }).observe(tv);
+    }
+    sync();
+  }
   var tl = document.querySelectorAll('.tl-item');
   function fill() {
     var line = window.innerHeight * 0.6;
