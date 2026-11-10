@@ -232,19 +232,130 @@ p { margin: 0; }
 .wins b.num { font-size: 1.625rem; line-height: 1.1; }
 @media (min-width: 520px) { .wins li { grid-template-columns: 8.5rem minmax(0, 1fr) !important; } }
 
-/* ---------- agent-team video (demo) ---------- */
+/* ---------- agent-team cards: "The Pass" (AO-21, PB-14) ---------- */
 .team { display: grid; gap: 28px; padding: 28px; background: var(--soft); border-radius: var(--radius-lg); align-items: center; }
 @media (min-width: 860px) { .team { grid-template-columns: minmax(0, 1fr) 440px; gap: 48px; padding: 40px 48px; } }
 .team-cap { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; text-align: start; }
 .team-cap p { margin: 0; }
 .team-cap .big { font: 600 clamp(1.5rem, 2.6vw, 2rem)/1.25 var(--font-display); max-width: 18em; }
-.team-media { display: flex; flex-direction: column; align-items: stretch; gap: 4px; width: 100%; max-width: 440px; justify-self: center; }
-.team-note { align-self: flex-end; display: inline-flex; align-items: flex-end; gap: 6px; margin: 0; padding-right: 8px; }
-.team-note svg { flex: none; overflow: visible; }
-.team-fig { position: relative; margin: 0; width: 100%; aspect-ratio: 4 / 5; border-radius: var(--radius); overflow: hidden; background: var(--soft); box-shadow: 0 10px 30px rgba(36,27,51,.14); }
-.team-fig video { display: block; width: 100%; height: 100%; object-fit: cover; }
-.team-pause { position: absolute; right: 10px; bottom: 10px; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(36,27,51,.78); color: #fff; font-size: 1rem; cursor: pointer; display: grid; place-items: center; }
-.team-pause:focus-visible { outline: 3px solid #fff; outline-offset: 2px; box-shadow: 0 0 0 6px var(--mark-ink); }
+.team-media { width: 100%; max-width: 440px; justify-self: center; }
+/* The widget: 17 flip cards in stage bands, 4:5 (440 x 550) on desktop. Every class is prefixed
+   pass- so nothing meets the page's own .card / .label / .in. Colours and fonts are the page tokens. */
+.pass-slot { container-type: inline-size; width: 100%; }
+.pass {
+  position: relative; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(5, minmax(0, 1fr)) auto;
+  gap: 6px; padding: 10px; aspect-ratio: 4 / 5;
+  background: var(--paper); border-radius: var(--radius); box-shadow: 0 10px 30px rgba(36,27,51,.14);
+  font-family: var(--font-body); line-height: 1.25; color: var(--ink);
+}
+.pass-band { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 5px; padding: 6px 8px 8px; border-radius: 14px; min-height: 0; }
+.pass-band.pass-half { grid-column: auto; }
+.pass-band h3 { margin: 0; font: 700 11px/1.2 var(--font-body); letter-spacing: .07em; text-transform: uppercase; color: var(--ink-muted); }
+.pass-top { background: var(--purple); }
+.pass-lav { background: var(--lavender); }
+.pass-yel { background: var(--soft); }
+.pass-row { flex: 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; min-height: 0; }
+.pass-band.pass-half .pass-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.pass-top .pass-row { padding-top: 2px; }
+.pass-only { align-self: center; margin: 0; padding-left: 4px; color: var(--on-purple); font: 600 15px/1.2 var(--font-display); }
+
+.pass-card { position: relative; min-height: 44px; padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; perspective: 700px; -webkit-tap-highlight-color: transparent; }
+.pass-card.pass-wide { grid-column: span 2; }
+.pass-row .pass-card:nth-of-type(odd) { transform: rotate(-1.1deg); }
+.pass-row .pass-card:nth-of-type(even) { transform: rotate(.9deg); }
+.pass-card.pass-open, .pass-card.pass-closing { transform: none !important; z-index: 5; }
+.pass-in { position: absolute; inset: 0; display: block; transform-style: preserve-3d; transition: transform .45s cubic-bezier(.3,.7,.3,1); }
+.pass-card.pass-open .pass-in { transform: rotateY(180deg); }
+.pass-f, .pass-b { backface-visibility: hidden; -webkit-backface-visibility: hidden; background: var(--surface); border-radius: 12px; box-shadow: 0 2px 6px rgba(36,27,51,.12); }
+.pass-f { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 1px; padding: 4px 8px; overflow: hidden; }
+.pass-f { transition: opacity .35s ease-out, transform .45s cubic-bezier(.3,1.5,.5,1), box-shadow .2s ease-out; }
+.pass-wait .pass-f, .pass-go .pass-f { transition-delay: calc(var(--i, 0) * 45ms); }
+.pass-wait .pass-f { opacity: 0; transform: translateY(14px) scale(.88); }
+.pass-name { font: 600 14.5px/1.15 var(--font-display); }
+.pass-job { font-size: 11.5px; line-height: 1.2; color: var(--ink-muted); }
+.pass-card.pass-wide .pass-name { font-size: 20px; color: var(--purple); }
+.pass-card.pass-wide .pass-job { font-size: 12.5px; }
+.pass-b {
+  position: absolute; width: var(--bw, 188px); left: calc(50% - var(--bw, 188px) / 2 - var(--dx, 0px)); top: 50%;
+  transform: translateY(calc(-50% + var(--dy, 0px))) rotateY(180deg);
+  display: block; padding: 10px 12px 12px; box-shadow: 0 10px 26px rgba(36,27,51,.28);
+  font-size: 13.5px; line-height: 1.35;
+}
+.pass-b b { display: block; font: 600 15px/1.2 var(--font-display); margin-bottom: 3px; padding-right: 34px; }
+.pass-b::after { content: ""; position: absolute; top: 8px; right: 9px; width: 22px; height: 22px; border-radius: 50%; background: var(--pass-work) var(--pass-gear) center / 15px no-repeat; box-shadow: 0 1px 3px rgba(36,27,51,.25); }
+.pass-soon .pass-f { background: transparent; box-shadow: none; border: 2px dashed rgba(36,27,51,.45); }
+.pass-soon .pass-b { border: 2px dashed rgba(36,27,51,.45); }
+.pass-card:focus-visible { outline: none; }
+.pass-card:focus-visible .pass-f, .pass-card:focus-visible .pass-b { outline: 3px solid var(--ink); outline-offset: 1px; box-shadow: 0 0 0 6px var(--surface); }
+@media (hover: hover) { .pass-card:not(.pass-open):hover .pass-f { box-shadow: 0 5px 12px rgba(36,27,51,.2); } }
+
+.pass-legend { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; padding: 1px 6px 0; font-size: 12.5px; line-height: 1.3; color: var(--ink-muted); }
+.pass-legend i, .pass-ticket { flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--pass-work) var(--pass-gear) center / 15px no-repeat; box-shadow: 0 1px 3px rgba(36,27,51,.3); }
+.pass-ticket { position: absolute; left: 0; top: 0; z-index: 9; opacity: 0; pointer-events: none; transition: transform .5s cubic-bezier(.5,0,.3,1), translate .5s cubic-bezier(.5,0,.3,1), opacity .12s; }
+.pass-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* Narrow slot (phones): bands stack, two cards per row, height follows the content. */
+@container (max-width: 399px) {
+  .pass { grid-template-columns: 1fr; grid-template-rows: none; aspect-ratio: auto; padding: 8px; }
+  .pass-band.pass-half { grid-column: 1 / -1; }
+  .pass-row, .pass-band.pass-half .pass-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pass-card { height: 46px; }
+  .pass-card.pass-wide { grid-column: auto; }
+  .pass-card.pass-wide .pass-name { font-size: 17px; }
+  .pass-only { grid-column: 1 / -1; order: -1; padding: 2px 2px 0; font-size: 14px; }
+  .pass-legend { padding: 4px 4px 2px; }
+  .pass-b { --bw: 200px; }
+}
+
+/* Reduced motion: no tilt, no travelling ticket, instant flip (the page-wide rule above already
+   switches every transition off; .pass-calm is the same state set from JS). */
+/* Round 2 (PB-14): a dark board, so each stage reads as a light that turns on, and one job that
+   runs down the line. .pass-run is on only while the job runs by itself; the first click, tap or
+   key removes every class below. */
+/* The job mark (round 4, Shai picked the bolt): a green lightning bolt instead of the yellow
+   ticket. Green is the system's "business" marker (design-line: #1D8A6B); it reads on the purple,
+   lavender and yellow bands. The bolt flashes only while an agent is working on the job.
+   (--pass-gear is the mark image; the name is from the first try, a gear.) */
+.pass { background: var(--ink); --pass-work: #1D8A6B; --pass-gear: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' d='M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z'/%3E%3C/svg%3E"); }
+.pass-yel { background: var(--hl); }
+.pass-legend { color: #DCD3EA; }
+.pass-band { transition: opacity .45s ease, box-shadow .3s ease; }
+.pass-wait .pass-band { opacity: 0; }
+.pass-go .pass-band { animation: pass-rise .55s cubic-bezier(.3,1.3,.5,1) both; animation-delay: calc(var(--b, 0) * 90ms); }
+@keyframes pass-rise { from { opacity: 0; transform: translateY(22px) scale(.96); } to { opacity: 1; transform: none; } }
+.pass-run .pass-band { opacity: .4; }
+.pass-run .pass-band.pass-live, .pass-run .pass-band.pass-past { opacity: 1; }
+.pass-band.pass-live { box-shadow: 0 0 0 2px #fff, 0 0 22px rgba(255,255,255,.4); }
+.pass-band.pass-live h3 { color: var(--ink); }
+.pass-band.pass-live h3::after { content: ""; display: inline-block; width: 7px; height: 7px; margin-left: 7px; border-radius: 50%; background: var(--purple); animation: pass-pulse .9s ease-in-out infinite; }
+.pass-band.pass-past h3::after { content: "\2713"; margin-left: 6px; color: var(--purple); font-size: 12px; }
+@keyframes pass-pulse { 50% { transform: scale(1.7); opacity: .35; } }
+.pass-card { transition: transform .32s cubic-bezier(.3,1.5,.5,1); }
+.pass-card.pass-now { transform: scale(1.08) !important; z-index: 4; }
+.pass-card.pass-now .pass-f { box-shadow: 0 0 0 3px var(--purple), 0 8px 18px rgba(36,27,51,.35); }
+.pass-card.pass-done::after { content: "\2713"; position: absolute; top: -5px; right: -4px; z-index: 2; display: grid; place-items: center; width: 17px; height: 17px; border-radius: 50%; background: var(--purple); color: #fff; font: 700 11px/1 var(--font-body); box-shadow: 0 1px 3px rgba(36,27,51,.3); animation: pass-pop .4s cubic-bezier(.3,1.8,.5,1) both; }
+@keyframes pass-pop { from { transform: scale(0); } to { transform: none; } }
+.pass-shipped { animation: pass-ship 1.3s ease-out; }
+.pass-shipped .pass-card.pass-done::after { animation: pass-cheer .55s cubic-bezier(.3,1.8,.5,1) both; animation-delay: calc(var(--i, 0) * 35ms); }
+@keyframes pass-cheer { 40% { transform: scale(1.6); } }
+@keyframes pass-ship { from { box-shadow: 0 10px 30px rgba(36,27,51,.14), 0 0 0 0 rgba(106,63,212,.6); } to { box-shadow: 0 10px 30px rgba(36,27,51,.14), 0 0 0 22px rgba(106,63,212,0); } }
+.pass-ticket.pass-job { scale: 1.35; animation: pass-work 1s ease-in-out infinite; }
+@keyframes pass-work { 50% { scale: 1.6; box-shadow: 0 0 0 5px rgba(29,138,107,.35), 0 1px 3px rgba(36,27,51,.3); } }
+
+/* After the run is stopped the board is still (Shai, round 4: motion at rest was confusing). The
+   job mark waits on Homer's corner, without moving, until a card is open. */
+.pass-rest:not(:has(.pass-open, .pass-closing)) .pass-wide::after { content: ""; position: absolute; top: -8px; right: -7px; z-index: 2; width: 24px; height: 24px; border-radius: 50%; background: var(--pass-work) var(--pass-gear) center / 16px no-repeat; box-shadow: 0 2px 5px rgba(36,27,51,.35); animation: pass-pop .4s cubic-bezier(.3,1.8,.5,1); }
+/* Under the mouse a card lifts and leans toward the pointer (--rx / --ry are set from JS). */
+@media (hover: hover) {
+  .pass-card:not(.pass-open):not(.pass-closing):hover { z-index: 3; }
+  .pass-card:not(.pass-open):not(.pass-closing):hover .pass-f { transform: translateY(-3px) scale(1.05) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); box-shadow: 0 9px 18px rgba(36,27,51,.32); transition-duration: .35s, .14s, .2s; transition-timing-function: ease-out; }
+}
+.pass-calm .pass-wide::after, .pass-calm .pass-ticket { animation: none !important; }
+.pass-calm .pass-card .pass-f { transform: none !important; }
+
+.pass-calm .pass-in, .pass-calm .pass-ticket { transition: none; }
+.pass-calm .pass-row .pass-card { transform: none; }
+@media (prefers-reduced-motion: reduce) { .pass-row .pass-card { transform: none; } .pass-card .pass-f { transform: none !important; } }
 </style>
 </head>
 <body>
@@ -375,10 +486,12 @@ p { margin: 0; }
         <p class="big">My team of AI agents takes a product from discovery to launch.</p>
       </div>
       <div class="team-media">
-      <figure class="team-fig">
-          <video id="team-video" muted loop playsinline preload="none" poster="assets/agent-team-poster.jpg" width="1080" height="1350" aria-label="Silent looping video: a team of AI agents, named after Simpsons characters, takes a product through five phases (Discover, Design, Develop, QA, Launch), with the tagline &quot;Homer's the boss. I sign off.&quot;"><source src="assets/agent-team.mp4" type="video/mp4"></video>
-          <button class="team-pause" id="team-pause" type="button" aria-label="Pause video">&#10074;&#10074;</button>
-        </figure>
+        <div class="pass-slot">
+          <div class="pass" id="pass" role="group" aria-label="My AI agent team, by stage. Select an agent to read what it does.">
+            <span class="pass-ticket" id="pass-ticket" aria-hidden="true"></span>
+          </div>
+          <p class="pass-sr" id="pass-live" aria-live="polite"></p>
+        </div>
       </div>
     </div>
     <div class="cards">
@@ -426,16 +539,6 @@ p { margin: 0; }
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  var tv = document.getElementById('team-video'), tp = document.getElementById('team-pause');
-  if (tv && tp) {
-    var paused = reduce;
-    function sync() { tp.innerHTML = paused ? '&#9654;' : '&#10074;&#10074;'; tp.setAttribute('aria-label', paused ? 'Play video' : 'Pause video'); }
-    tp.addEventListener('click', function () { paused = !paused; paused ? tv.pause() : tv.play(); sync(); });
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (e) { if (!paused) { e[0].isIntersecting ? tv.play().catch(function(){}) : tv.pause(); } }, { threshold: 0.4 }).observe(tv);
-    }
-    sync();
-  }
   var tl = document.querySelectorAll('.tl-item');
   function fill() {
     var line = window.innerHeight * 0.6;
@@ -478,6 +581,185 @@ p { margin: 0; }
     items.forEach(function (el) { el.classList.add('in'); });
   }
 
+})();
+// Agent-team cards, "The Pass" (AO-21, PB-14). Card texts are final (Lisa + Shai, 2026-11-10).
+(function () {
+  var pass = document.getElementById('pass'), ticket = document.getElementById('pass-ticket'), live = document.getElementById('pass-live');
+  if (!pass || !ticket || !live) return;
+  // [name, front line, back text, flag]
+  var bands = [
+    { cls: 'pass-top', title: '', cards: [
+      ['Homer', 'Orchestrator', 'The boss and my only contact. He runs the team and brings me the answers.', 'wide'],
+      ['Marge', 'Product manager', 'Homer’s right hand. Decides what we build and why, then checks the result.'] ] },
+    { cls: 'pass-lav', title: 'Discover', cards: [
+      ['Apu', 'Market analyst', 'Sizes the market and shows who buys, with a source for every number.'],
+      ['Mr. Burns', 'Competitor scout', 'Maps the competitors: their prices and their weak spots.'],
+      ['Kent', 'User researcher', 'Turns real customer words into pains, jobs and quotes.'],
+      ['Milhouse', 'Research auditor', 'Checks the evidence and names the cheapest next test.'] ] },
+    { cls: 'pass-yel', title: 'Plan and design', cards: [
+      ['Bart', 'Red team', 'Tries to break the plan before anything gets built.'],
+      ['Comic Book Guy', 'Designer', 'Proposes design ideas and brings a fix for every flaw.'],
+      ['Lisa', 'Content writer', 'Writes pages, in-app text and posts in my voice.'],
+      ['Maggie', 'Coming soon', 'Coming soon: the tiny texts inside the product.', 'soon'] ] },
+    { cls: 'pass-lav', title: 'Build', cards: [
+      ['Ned', 'Architect', 'Drafts the tech spec from the plan, with options for every choice.'],
+      ['Moe', 'Developer', 'Builds the product from the spec, one small task at a time, with tests.'],
+      ['Chief Clancy', 'Coming soon', 'Coming soon: the security checks before anything ships.', 'soon'] ] },
+    { cls: 'pass-yel pass-half', title: 'Check', cards: [
+      ['Selma', 'Code QA', 'Tests the code and fixes clear bugs.'],
+      ['Patty', 'Screen QA', 'Clicks through the real site like a user and adds a test for every bug.'] ] },
+    { cls: 'pass-lav pass-half', title: 'Ship', cards: [
+      ['Smithers', 'Release manager', 'Prepares the launch, then watches the live numbers.'],
+      ['Krusty', 'Coming soon', 'Coming soon: the marketing around each launch.', 'soon'] ] }
+  ];
+
+  var mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (mq.matches) pass.classList.add('pass-calm');
+  if (mq.addEventListener) mq.addEventListener('change', function () { pass.classList.toggle('pass-calm', mq.matches); });
+  function isCalm() { return pass.classList.contains('pass-calm'); }
+  var homer = null, openCard = null, run = 0, auto = false, order = [];
+
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; }
+
+  bands.forEach(function (band) {
+    var s = el('section', 'pass-band ' + band.cls);
+    if (band.title) s.appendChild(el('h3', '', band.title));
+    var row = el('div', 'pass-row');
+    band.cards.forEach(function (a) {
+      var c = el('button', 'pass-card' + (a[3] ? ' pass-' + a[3] : ''));
+      c.type = 'button'; c.setAttribute('aria-expanded', 'false');
+      var inn = el('span', 'pass-in'), f = el('span', 'pass-f'), b = el('span', 'pass-b');
+      f.appendChild(el('span', 'pass-name', a[0])); f.appendChild(el('span', 'pass-job', a[1]));
+      b.setAttribute('aria-hidden', 'true'); b.appendChild(el('b', '', a[0])); b.appendChild(document.createTextNode(a[2]));
+      inn.appendChild(f); inn.appendChild(b); c.appendChild(inn);
+      c.dataset.say = a[0] + ': ' + a[2]; c.dataset.line = a[0] + ' · ' + a[1];
+      c.style.setProperty('--i', pass.querySelectorAll('.pass-card').length + row.children.length);
+      if (a[3] === 'wide') homer = c; else if (a[3] !== 'soon') order.push(c);
+      c.addEventListener('click', function () { stopDemo(); choose(c); });
+      row.appendChild(c);
+    });
+    if (!band.title) row.appendChild(el('p', 'pass-only', 'I talk only to Homer.'));
+    s.style.setProperty('--b', pass.querySelectorAll('.pass-band').length);
+    s.appendChild(row); pass.appendChild(s);
+  });
+  var lg = el('p', 'pass-legend'); lg.appendChild(el('i')); lg.appendChild(el('span', '', 'The green bolt is the job. It always starts with Homer.'));
+  pass.appendChild(lg);
+
+  // Keep the larger back face inside the panel.
+  function place(c) {
+    var b = c.querySelector('.pass-b'), p = pass.getBoundingClientRect(), r = c.getBoundingClientRect();
+    var w = b.offsetWidth, h = b.offsetHeight, m = 6;
+    var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    var left = Math.min(Math.max(cx - w / 2, p.left + m), p.right - m - w);
+    var top = Math.min(Math.max(cy - h / 2, p.top + m), p.bottom - m - h);
+    c.style.setProperty('--dx', (left - (cx - w / 2)) + 'px');
+    c.style.setProperty('--dy', (top - (cy - h / 2)) + 'px');
+  }
+  function close(c) {
+    c.classList.remove('pass-open'); c.classList.add('pass-closing'); c.setAttribute('aria-expanded', 'false');
+    setTimeout(function () { c.classList.remove('pass-closing'); }, isCalm() ? 0 : 460);
+    if (openCard === c) openCard = null;
+  }
+  function open(c) {
+    place(c); c.classList.remove('pass-closing'); c.classList.add('pass-open'); c.setAttribute('aria-expanded', 'true');
+    openCard = c; if (!auto) live.textContent = c.dataset.say;
+  }
+  function choose(c) {
+    var mine = ++run, wasOpen = c === openCard;
+    ticket.style.opacity = 0;
+    if (openCard) close(openCard);          // only one card is open at a time
+    if (wasOpen) { if (!auto) live.textContent = ''; return; }
+    if (c === homer || isCalm()) { open(c); return; }
+    var p = pass.getBoundingClientRect(), a = homer.getBoundingClientRect(), t = c.getBoundingClientRect();
+    ticket.style.transition = 'none';
+    ticket.style.transform = 'translate(' + (a.left - p.left + a.width / 2 - 11) + 'px,' + (a.top - p.top + a.height / 2 - 11) + 'px)';
+    ticket.style.opacity = 1;
+    ticket.getBoundingClientRect();
+    ticket.style.transition = '';
+    ticket.style.transform = 'translate(' + (t.left - p.left + t.width / 2 - 11) + 'px,' + (t.top - p.top + t.height / 2 - 11) + 'px)';
+    setTimeout(function () { if (mine !== run) return; ticket.style.opacity = 0; open(c); }, 520);
+  }
+  // Catch the eye (round 2): the stages rise in when the panel scrolls into view, then one job
+  // runs down the line by itself. The ticket starts with Homer, goes to Marge, then through every
+  // stage in order; the stage it is in lights up, the agent holding it is ringed, finished agents
+  // keep a check mark. After Ship one card flips open to show that the cards open, and a new job
+  // starts. It pauses under the mouse and off screen, and stops for good (and clears every mark)
+  // at the first click, tap or key. Off under reduced motion.
+  var demoStopped = false, demoT = null, inView = false, hover = false, seq = [], step = 0, teaser = 0;
+  var legendText = lg.lastChild, legendSay = legendText.textContent;
+  pass.querySelectorAll('.pass-card').forEach(function (c) { if (!c.classList.contains('pass-soon')) seq.push(c); });
+  function lockLegend() { lg.style.minHeight = ''; legendText.textContent = legendSay; lg.style.minHeight = lg.offsetHeight + 'px'; }
+  function clearRun() {
+    pass.classList.remove('pass-run', 'pass-shipped');
+    pass.querySelectorAll('.pass-live,.pass-past,.pass-now,.pass-done').forEach(function (n) { n.classList.remove('pass-live', 'pass-past', 'pass-now', 'pass-done'); });
+    ticket.classList.remove('pass-job'); ticket.style.opacity = 0; ticket.style.translate = '';
+    legendText.textContent = legendSay;
+  }
+  function stopDemo() { if (demoStopped) return; demoStopped = true; auto = false; clearTimeout(demoT); clearRun(); pass.classList.add('pass-rest'); }
+  function ticketTo(c, jump) {
+    var p = pass.getBoundingClientRect(), r = c.getBoundingClientRect();
+    if (jump) ticket.style.transition = 'none';
+    ticket.style.transform = 'none'; ticket.style.translate = (r.right - p.left - 19) + 'px ' + (r.top - p.top - 9) + 'px';
+    if (jump) { ticket.getBoundingClientRect(); ticket.style.transition = ''; }
+  }
+  function finish(c, nextBand) {
+    var b = c.closest('.pass-band');
+    c.classList.remove('pass-now'); c.classList.add('pass-done');
+    if (b !== nextBand) { b.classList.remove('pass-live'); b.classList.add('pass-past'); }
+  }
+  function demoTick() {
+    if (demoStopped) return;
+    if (!inView || hover || document.hidden || isCalm()) { demoT = setTimeout(demoTick, 400); return; }
+    auto = true;
+    var wait;
+    if (step === -1) {                       // the teaser card is open: close it, then a new job
+      if (openCard) close(openCard);
+      step = 0; wait = 800;
+    } else if (step < seq.length) {          // the job moves to the next agent
+      var c = seq[step], band = c.closest('.pass-band');
+      if (step === 0) { clearRun(); pass.classList.add('pass-run'); ticket.classList.add('pass-job'); ticketTo(c, true); ticket.style.opacity = 1; }
+      else { ticketTo(c); finish(seq[step - 1], band); }
+      band.classList.add('pass-live'); c.classList.add('pass-now');
+      legendText.textContent = c.dataset.line;
+      step++; wait = step <= 2 ? 1100 : 850;
+    } else if (step === seq.length) {        // shipped
+      finish(seq[step - 1], null);
+      pass.classList.add('pass-shipped'); ticket.style.opacity = 0; legendText.textContent = legendSay;
+      step++; wait = 2000;
+    } else {                                 // show that a card opens
+      clearRun(); choose(order[(teaser++ * 5) % order.length]);
+      step = -1; wait = 3400;
+    }
+    demoT = setTimeout(demoTick, wait);
+  }
+  lockLegend();
+  window.addEventListener('resize', function () { var t = legendText.textContent; lockLegend(); legendText.textContent = t; });
+  if ('IntersectionObserver' in window && !isCalm()) {
+    pass.classList.add('pass-wait');
+    var started = false;
+    new IntersectionObserver(function (es) {
+      inView = es[0].isIntersecting;
+      if (inView && !started) {
+        started = true; pass.classList.remove('pass-wait'); pass.classList.add('pass-go');
+        setTimeout(function () { pass.classList.remove('pass-go'); }, 1400);
+        demoT = setTimeout(demoTick, 1900);
+      }
+    }, { threshold: 0.5 }).observe(pass);
+    pass.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') hover = true; });
+    pass.addEventListener('pointerleave', function () { hover = false; });
+    // A card leans toward the mouse (up to 9 degrees); the CSS reads --rx / --ry on hover.
+    pass.addEventListener('pointermove', function (e) {
+      var c = e.pointerType === 'mouse' && e.target.closest && e.target.closest('.pass-card');
+      if (!c || isCalm() || c.classList.contains('pass-open')) return;
+      var r = c.getBoundingClientRect();
+      c.style.setProperty('--ry', (((e.clientX - r.left) / r.width - .5) * 18).toFixed(1) + 'deg');
+      c.style.setProperty('--rx', ((.5 - (e.clientY - r.top) / r.height) * 18).toFixed(1) + 'deg');
+    });
+    pass.addEventListener('pointerdown', stopDemo);
+    pass.addEventListener('keydown', stopDemo);
+  }
+  pass.addEventListener('keydown', function (e) { if (e.key === 'Escape' && openCard) { var c = openCard; run++; close(c); c.focus(); } });
+  window.addEventListener('resize', function () { if (openCard) place(openCard); });
 })();
 </script>
 </body>
