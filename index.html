@@ -186,6 +186,16 @@ p { margin: 0; }
 
 .rel { position: relative; }
 
+/* ---------- scroll demo (PB-17, ideas 1, 3, 6) ---------- */
+.built { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 10px; }
+.built .label { margin-right: 4px; }
+.built a.chip { text-decoration: none; min-height: 32px; transition: transform .15s, box-shadow .15s; }
+.built a.chip:hover { transform: translateY(-1px); box-shadow: 0 0 0 2px var(--purple); }
+.built a.chip span { font-weight: 600; color: var(--ink-muted); }
+.card:target { border-color: var(--purple); }
+.cards .card { scroll-margin-top: 24px; }
+.team-block { padding-top: 56px; }
+
 /* ---------- footer ---------- */
 .site-foot { padding-block: 72px 40px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; color: var(--ink-muted); }
 .foot-links { display: flex; gap: 24px; }
@@ -364,6 +374,7 @@ p { margin: 0; }
   <a class="brand" href="#top"><span class="mono-mark" aria-hidden="true">SA</span>Shai Atar</a>
   <nav class="site-nav" aria-label="Main">
     <a href="#experience">Experience</a>
+    <a href="#team">Agent team</a>
     <a href="#work">Recent builds</a>
     <a class="btn btn-secondary btn-sm" href="assets/Shai-Atar-Resume.pdf" download>Resume</a>
   </nav>
@@ -376,14 +387,14 @@ p { margin: 0; }
       <p class="label purple">Senior Product Manager | Hands-on Builder</p>
       <h1 id="name">Shai Atar</h1>
       <svg class="squig" viewBox="0 0 150 14" aria-hidden="true"><path class="doodle" d="M3 8 Q 22 0, 40 8 T 76 8 T 112 8 T 147 7"/></svg>
-      <p class="lead rel">I'm a senior product manager who sets strategy and makes the hard <span class="hl">prioritization calls</span>: a narrow MVP to reach the first customer, a stop/go decision backed by data. I take products from discovery to launch, and I build them myself.</p>
+      <p class="lead rel">I'm a senior product manager who sets strategy and makes the hard <span class="hl">prioritization calls</span>: a narrow MVP to reach the first customer, a stop/go decision backed by data. I take products from discovery to launch, and I build them myself.<br><br>Right now I&rsquo;m building <a class="link" href="#card-directref">DirectRef</a>, an <a class="link" href="#card-travel">AI lead-discovery tool</a> for a travel agency and a <a class="link" href="#card-generator">field service CRM</a> for a generator company.</p>
       <p class="shared-line"><span class="circled">Understand first.<svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M14 36 C 10 14, 70 4, 120 6 C 170 8, 196 20, 190 36 C 184 52, 120 58, 70 55 C 30 52, 6 44, 10 28 C 13 18, 30 10, 52 8"/></svg></span> Then build.</p>
       <div class="actions rel">
         <a class="btn btn-primary" href="assets/Shai-Atar-Resume.pdf" download>Download resume</a>
         <a class="btn btn-secondary" href="https://www.linkedin.com/in/shai-atar/" target="_blank" rel="noopener">LinkedIn</a>
         <a class="btn btn-secondary" href="mailto:shaiatar@gmail.com">Email</a>
       </div>
-      
+
     </div>
 
     <aside class="short" aria-labelledby="short-h">
@@ -401,6 +412,23 @@ p { margin: 0; }
         <div><dt>Based</dt><dd>Israel</dd></div>
       </dl>
     </aside>
+  </section>
+
+  <section class="block team-block" id="team" aria-label="My AI agent team">
+    <div class="team">
+      <div class="team-cap">
+        <p class="label pop">My agents team</p>
+        <p class="big">My team of AI agents takes a product from discovery to launch.</p>
+      </div>
+      <div class="team-media">
+        <div class="pass-slot">
+          <div class="pass" id="pass" role="group" aria-label="My AI agent team, by stage. Select an agent to read what it does.">
+            <span class="pass-ticket" id="pass-ticket" aria-hidden="true"></span>
+          </div>
+          <p class="pass-sr" id="pass-live" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="block" id="experience" aria-labelledby="exp-h">
@@ -480,36 +508,22 @@ p { margin: 0; }
     <div class="block-head">
       <h2 id="work-h">What I'm building now</h2>
     </div>
-    <div class="team">
-      <div class="team-cap">
-        <p class="label pop">My agents team</p>
-        <p class="big">My team of AI agents takes a product from discovery to launch.</p>
-      </div>
-      <div class="team-media">
-        <div class="pass-slot">
-          <div class="pass" id="pass" role="group" aria-label="My AI agent team, by stage. Select an agent to read what it does.">
-            <span class="pass-ticket" id="pass-ticket" aria-hidden="true"></span>
-          </div>
-          <p class="pass-sr" id="pass-live" aria-live="polite"></p>
-        </div>
-      </div>
-    </div>
     <div class="cards">
-      <article class="card"><div class="card-ico" aria-hidden="true"><svg viewBox="0 0 64 64"><circle class="doodle" pathLength="1" cx="14" cy="32" r="8"/><circle class="doodle" pathLength="1" cx="50" cy="32" r="8"/><path class="doodle" pathLength="1" d="M24 24 Q32 12 40 24 M40 24 L35 23 M40 24 L41 19"/><path class="doodle" pathLength="1" d="M24 40 Q32 52 40 40"/></svg></div>
+      <article class="card" id="card-directref"><div class="card-ico" aria-hidden="true"><svg viewBox="0 0 64 64"><circle class="doodle" pathLength="1" cx="14" cy="32" r="8"/><circle class="doodle" pathLength="1" cx="50" cy="32" r="8"/><path class="doodle" pathLength="1" d="M24 24 Q32 12 40 24 M40 24 L35 23 M40 24 L41 19"/><path class="doodle" pathLength="1" d="M24 40 Q32 52 40 40"/></svg></div>
         <div class="card-top"><span class="label">Co-founded · DirectRef</span><span class="chip wip">In beta</span></div>
         <h3>A referral-first job network for tech</h3>
         <p class="desc">Connecting job seekers directly with company insiders who forward CVs and provide guaranteed feedback. Built end-to-end from idea to production.</p>
         <p class="goal"><b>Goal</b>eliminate the job application &ldquo;black hole&rdquo; by securing internal referrals and guaranteed candidate feedback</p>
         <p class="plan"><a class="link" href="https://direct-ref.com" target="_blank" rel="noopener">direct-ref.com</a></p>
       </article>
-      <article class="card"><div class="card-ico" aria-hidden="true"><svg viewBox="0 0 64 64"><path class="doodle" pathLength="1" d="M6 30 L58 8 L44 56 L30 38 Z M30 38 L58 8"/></svg></div>
+      <article class="card" id="card-travel"><div class="card-ico" aria-hidden="true"><svg viewBox="0 0 64 64"><path class="doodle" pathLength="1" d="M6 30 L58 8 L44 56 L30 38 Z M30 38 L58 8"/></svg></div>
         <div class="card-top"><span class="label">Client · Travel agency</span><span class="chip built">Shipped v1</span></div>
         <h3>Automated AI lead discovery for travel agencies</h3>
         <p class="desc">Replacing 8 hours a week of manual research with scheduled AI agents that discover, qualify, and score potential partner agencies against custom criteria.</p>
         <p class="plan"><b>v2 in progress</b> multi-country expansion and a dedicated client dashboard.</p>
         <p class="goal"><b>Goal</b>automate ~8 hours a week of manual research into a scored, actionable daily lead pipeline</p>
       </article>
-      <article class="card"><div class="card-ico" aria-hidden="true"><svg viewBox="0 0 64 64"><path class="doodle" pathLength="1" d="M36 6 L16 36 H30 L26 58 L48 26 H34 Z"/></svg></div>
+      <article class="card" id="card-generator"><div class="card-ico" aria-hidden="true"><svg viewBox="0 0 64 64"><path class="doodle" pathLength="1" d="M36 6 L16 36 H30 L26 58 L48 26 H34 Z"/></svg></div>
         <div class="card-top"><span class="label">Client · Generator service company</span><span class="chip wip">In progress</span></div>
         <h3>Field service CRM for generator fleets</h3>
         <p class="desc">Digitizing operations for ~500 industrial generators, replacing fragmented Excel schedules and paper fault binders with a unified field management CRM.</p>
