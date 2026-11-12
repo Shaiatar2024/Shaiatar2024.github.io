@@ -179,6 +179,24 @@ p { margin: 0; }
 .plan b { color: var(--ink); font-weight: 700; margin-inline-end: 4px; }
 .goal { margin-top: auto; background: var(--paper); border-radius: var(--radius-sm); padding: 10px 14px; font-size: .9375rem; color: var(--ink-muted); }
 .goal b { color: var(--purple); margin-inline-end: 6px; }
+/* QuestGo card: one screen (PB-19, Q58) */
+.shot { margin: 4px 0; padding: 16px 16px 12px; background: var(--paper); border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.shot img { display: block; width: 100%; max-width: 220px; height: auto; border-radius: 12px; }
+.shot figcaption { font-size: .8125rem; line-height: 1.4; color: var(--ink-muted); text-align: center; }
+/* 760 to 1019px: cards are narrow, so a top window of the screen keeps the row even */
+@media (min-width: 760px) and (max-width: 1019px) {
+  .shot { margin: 0; padding: 10px 16px 8px; gap: 6px; }
+  .shot img { height: 200px; object-fit: cover; object-position: top; -webkit-mask-image: linear-gradient(#000 75%, transparent); mask-image: linear-gradient(#000 75%, transparent); }
+}
+/* 1020px and up: the screen stands upright beside the text, so the 2x2 grid holds */
+@media (min-width: 1020px) {
+  .card.has-shot { display: grid; grid-template-columns: minmax(0, 1fr) 150px; grid-template-rows: auto auto auto 1fr auto; column-gap: 22px; }
+  .card.has-shot > * { grid-column: 1; }
+  .card.has-shot h3 { justify-self: start; }
+  .card.has-shot .shot { grid-column: 2; grid-row: 1 / -1; align-self: center; margin: 0; padding: 0; background: none; gap: 8px; }
+  .card.has-shot .shot img { max-width: 150px; box-shadow: var(--shadow); }
+  .card.has-shot .goal { margin-top: 0; align-self: end; }
+}
 .note { display: flex; align-items: center; gap: 8px; }
 .note svg { flex: none; width: 34px; height: 22px; overflow: visible; transform: rotate(-90deg); }
 .note path { fill: none; stroke: var(--mark); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
@@ -511,10 +529,14 @@ p { margin: 0; }
         <p class="plan"><b>The plan</b> a central service board integrating scheduled maintenance, a mobile app for field technicians (signatures, photos, parts), and automated data migration.</p>
         <p class="goal"><b>Goal</b>zero missed service cycles and a drastically reduced administrative workload</p>
       </article>
-      <article class="card"><div class="card-ico" aria-hidden="true"><svg viewBox="0 0 64 64"><path class="doodle" pathLength="1" d="M40 6 a12 12 0 0 1 12 12 c0 10-12 24-12 24 s-12-14-12-24 a12 12 0 0 1 12-12z"/><circle class="doodle" pathLength="1" cx="40" cy="18" r="4"/><path class="doodle dots" d="M6 58 C 20 40, 12 34, 28 46"/></svg></div>
+      <article class="card has-shot" id="card-questgo"><div class="card-ico" aria-hidden="true"><svg viewBox="0 0 64 64"><path class="doodle" pathLength="1" d="M40 6 a12 12 0 0 1 12 12 c0 10-12 24-12 24 s-12-14-12-24 a12 12 0 0 1 12-12z"/><circle class="doodle" pathLength="1" cx="40" cy="18" r="4"/><path class="doodle dots" d="M6 58 C 20 40, 12 34, 28 46"/></svg></div>
         <div class="card-top"><span class="label">Own product · QuestGo</span><span class="chip wip">Field test</span></div>
         <h3>Interactive mobile scavenger hunts for groups</h3>
         <p class="desc">A mobile-first station quest platform, like &ldquo;The Amazing Race&rdquo; for groups. Inspired by a treasure hunt game I loved as a kid and wanted to share with my son, fully modernized for mobile screens.</p>
+        <figure class="shot">
+          <img src="assets/questgo-organizer-map.png" width="390" height="710" loading="lazy" decoding="async" alt="Design render of QuestGo's organizer view: a map where the organizer draws the play area and places numbered stations, Hebrew interface.">
+          <figcaption>Organizer view · Hebrew UI · design render</figcaption>
+        </figure>
         <p class="goal"><b>Goal</b>empower parents to effortlessly create custom, interactive outdoor games</p>
       </article>
     </div>
